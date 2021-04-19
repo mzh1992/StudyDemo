@@ -1,0 +1,39 @@
+Activity启动流程：
+
+
+1.handleLaunchActivity(ActivityClientRecord r,PendingTransactionActions pendingActions, Intent customIntent)
+    -------WindowManagerGlobal.initialize(); 进程间通信，拿到sWindowManagerService对象
+    -------performLaunchActivity(r, customIntent)
+           ------ ContextImpl appContext = createBaseContextForActivity(r); 创建Context
+           ------ activity = mInstrumentation.newActivity(cl, component.getClassName(), r.intent);通过反射创建Activity
+           ------ Application app = r.packageInfo.makeApplication(false, mInstrumentation);创建Application
+           ------ activity.attach(appContext, this, getInstrumentation(), r.token,
+                                       r.ident, app, r.intent, r.activityInfo, title, r.parent,
+                                       r.embeddedID, r.lastNonConfigurationInstances, config,
+                                       r.referrer, r.voiceInteractor, window, r.configCallback,
+                                       r.assistToken);//Context与Activity进行绑定   同时也会这里创建PhoneWindow
+           -------mInstrumentation.callActivityOnCreate(activity, r.state)//执行生命周期onCreate()方法
+
+
+2. public void handleStartActivity(ActivityClientRecord r,PendingTransactionActions pendingActions)
+    ------activity.performStart();
+          --------- mInstrumentation.callActivityOnStart(this);
+                    ---------activity.onStart();
+          --------- mInstrumentation.callActivityOnRestoreInstanceState(activity, r.state);
+                    ---------activity.performRestoreInstanceState(savedInstanceState);
+
+3.public void handleResumeActivity(IBinder token, boolean finalStateRequest, boolean isForward,String reason)
+    ------final ActivityClientRecord r = performResumeActivity(token, finalStateRequest, reason);
+          ----------- r.activity.performResume(r.startsNotResumed, reason);
+                      ------- mInstrumentation.callActivityOnResume(this);
+                             --------- activity.onResume();
+    ------WindowManager.addView(DecorView decorView)
+          ------mGlobal.addView(view, params, mContext.getDisplay(), mParentWindow);
+                ------ViewRootImpl root = new ViewRootImpl(view.getContext(), display);
+                ------root.setView(view, wparams, panelParentView);
+                      ------ requestLayout();//绘制过程
+                      ------ view.assignParent(this);//DecorView的parent是ViewRootImpl
+
+    -------r.activity.makeVisible();  //这就是onResume能看见界面的原因
+
+

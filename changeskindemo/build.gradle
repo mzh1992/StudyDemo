@@ -1,0 +1,81 @@
+plugins {
+    id 'com.android.application'
+}
+
+println "Hello Gradle"
+
+def androidId = rootProject.ext.androidId
+def appId = rootProject.ext.appId
+def support = rootProject.ext.dependencies
+def url = rootProject.ext.url
+
+android {
+    compileSdkVersion androidId.compileSdkVersion
+    buildToolsVersion androidId.buildToolsVersion
+
+    defaultConfig {
+        applicationId appId.app
+        minSdkVersion androidId.minSdkVersion
+        targetSdkVersion androidId.targetSdkVersion
+        versionCode androidId.versionCode
+        versionName androidId.versionName
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        debug {
+            // 天坑：填错了，编译不通过还找不到问题
+            storeFile file('C:/Users/mzh/.android/debug.keystore')
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+        release {
+            // 签名证书文件
+            storeFile file('C:/Android/MvpSimpleDemo/123.jks')
+//            // 签名证书的类型
+//            storeType "netease"
+            // 签名证书文件的密码
+            storePassword "123456"
+            // 签名证书中密钥别名
+            keyAlias "123"
+            // 签名证书中该密钥的密码
+            keyPassword "123456"
+            // 是否开启V2打包
+            v2SigningEnabled true
+        }
+    }
+
+    buildTypes {
+        debug {
+            // 对构建类型设置签名信息
+            signingConfig signingConfigs.debug
+            buildConfigField("String", "debug", "\"${url.debug}\"")
+        }
+        release {
+            // 对构建类型设置签名信息
+            signingConfig signingConfigs.release
+            buildConfigField("String", "debug", "\"${url.release}\"")
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+
+//    implementation support.appcompat
+//    implementation support.material
+//    implementation support.constraintlayout
+
+    support.each { k, v -> api v }
+
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+}

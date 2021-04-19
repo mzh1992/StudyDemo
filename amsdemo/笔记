@@ -1,0 +1,5 @@
+StartActivity流程
+
+经过两次Binder.
+
+客户端--->[Binder机制]--->AMS---[Binder机制]---->客户端

@@ -1,0 +1,35 @@
+//添加自定义属性，可以通过ext代码块
+ext {
+
+
+    username = "mzh"
+
+    androidId = [
+            compileSdkVersion: 29,
+            buildToolsVersion: "30.0.3",
+            minSdkVersion    : 21,
+            targetSdkVersion : 29,
+            versionCode      : 1,
+            versionName      : "1.0"
+    ]
+
+    appId = [
+            app    : "com.example.changeskindemo",
+            library: "com.example.mylibrary"
+    ]
+
+    supportLibrary = "1.1.0"
+
+    dependencies = [
+            appcompat       : "androidx.appcompat:appcompat:${supportLibrary}",
+            material        : "com.google.android.material:material:${supportLibrary}",
+            constraintlayout: 'androidx.constraintlayout:constraintlayout:1.1.3'
+    ]
+
+    // 生产/开发环境URL
+    url = [
+            "debug"  : "https://11.22.33.44/debug",
+            "release": "https://11.22.33.44/release"
+    ]
+
+}

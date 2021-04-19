@@ -1,0 +1,8 @@
+//include ':lib'
+//include ':mylibrary'
+//include ':changeskindemo'
+//include ':amsdemo'
+//include ':mvvmdatabind'
+include ':mvp'
+include ':app'
+rootProject.name = "MvpSimpleDemo"
